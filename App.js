@@ -1,16 +1,51 @@
-import React from 'react'
-import {useSelector,useDispatch} from 'react-redux';
-import {doIncrement,doDecrement} from "./reduxTool";
+import React, { Component, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {doIncrement, doDecrement} from './redux'
 
-export default function App() {
-    const state = useSelector((state) => state)
-     const dispatch = useDispatch();
-    const{counter} = state;
+import { Provider } from 'react-redux';
+import {showTodos} from './redux'
+
+
+const App =()=>{
+  const state=useSelector((state)=>state)
+  
+  const usedispatch=useDispatch();
+  useEffect(()=>{
+    usedispatch(showTodos());
+  },[])
+  const {todo} = state;
+  console.log(todo,"app.js")
+  
     return (
         <div>
-            <h1>Counter:{counter}</h1>
-            <button onClick={() =>dispatch(doIncrement(1))}>Increment</button>
-            <button onClick={() =>dispatch(doDecrement())}>Decrement</button>
+            <table class="table">
+  <thead>
+  <tr>
+      
+      <td>userId</td>
+      
+      <td>Tittle</td>
+      <td>Completed</td>
+    </tr>
+  </thead>
+  <tbody>
+      {
+          todo?.map?.(todo =>{
+              return(
+                  <tr>
+                      <td>{todo?.userId}</td>
+                      
+                      <td>{todo?.title}</td>
+                      <td>{todo?.completed}</td>
+                  </tr>
+              )
+          })
+      }
+    
+    
+  </tbody>
+</table>
         </div>
     )
 }
+export  default App;

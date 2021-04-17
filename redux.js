@@ -1,31 +1,33 @@
-import {createStore} from 'redux'
-const initialState = {counter:0}
-const reducer = (state = initialState,action) => {
-    switch(action.type)
-    {
-        case "INCREMENT":return{
-            counter:state.counter + action.payload
-        }
-        default:return state
-        case "DECREMENT":return{
-            counter:state.counter - action.payload
-        }
-        default:return state
+import axios from "axios"
+import { applyMiddleware, combineReducers, createStore } from "redux"
+import { composeWithDevTools } from "redux-devtools-extension"
+import thunk from "redux-thunk"
+
+
+const todoReducer=(state={
+   todo: []
+},action)=>{
+    switch(action.type){
+        case "TODO": return {todo: action.payload}
+        default : return state
     }
 }
-export const store = createStore(reducer)
-const increment ={
-    type: "INCREMENT"
-}
-export const doIncrement =(value)=>{
+
+export const store=createStore(todoReducer , composeWithDevTools(applyMiddleware(thunk)))
+
+export const getTodos=(payload)=>{
     return{
-        type:INCREMENT,
-        Payload:value
+        type: "TODO",
+        payload
     }
 }
-export const doDecrement =(value)=>{
-    return{
-        type:DECREMENT,
-        Payload:value
+
+export const showTodos=()=>{
+    return(dispatch)=>{
+        axios.get("https://jsonplaceholder.typicode.com/todos").then(res=>{
+            dispatch(getTodos(res.data))
+            console.log(res.data)
+        })
+        
     }
 }
