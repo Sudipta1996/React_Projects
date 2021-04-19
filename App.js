@@ -1,51 +1,59 @@
-import React, { Component, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {doIncrement, doDecrement} from './redux'
+import axios from 'axios';
+import React, { Component } from 'react'
+import { BrowserRouter, Redirect, Route } from 'react-router-dom';
+import Todos from './Todos'
+import Todo from './Todo'
+import Home from './Home'
+import Error from './Error'
 
-import { Provider } from 'react-redux';
-import {showTodos} from './redux'
+class Operation extends Component{
+    constructor(){
+        super();
+        this.state={
+            todos:[]
+        }
+    }
+    componentDidMount(){
+        axios.get("https://jsonplaceholder.typicode.com/todos/").then(res=>{
+            res.data.length=10
+            
+            this.setState({
+                ...this.state,
+                todos: res.data
+            })
+        })
+    }
+    addoredit=(item)=>{
+        const items=this.state.todos.filter(items=>items.id!=item.id)
+        this.setState({
+            ...this.state,
+            todos:[...items,item]
+        })
+    }
+    render(){
+        console.log(this.state)
+        return(
 
-
-const App =()=>{
-  const state=useSelector((state)=>state)
-  
-  const usedispatch=useDispatch();
-  useEffect(()=>{
-    usedispatch(showTodos());
-  },[])
-  const {todo} = state;
-  console.log(todo,"app.js")
-  
-    return (
-        <div>
-            <table class="table">
-  <thead>
-  <tr>
-      
-      <td>userId</td>
-      
-      <td>Tittle</td>
-      <td>Completed</td>
-    </tr>
-  </thead>
-  <tbody>
-      {
-          todo?.map?.(todo =>{
-              return(
-                  <tr>
-                      <td>{todo?.userId}</td>
-                      
-                      <td>{todo?.title}</td>
-                      <td>{todo?.completed}</td>
-                  </tr>
-              )
-          })
-      }
-    
-    
-  </tbody>
-</table>
-        </div>
-    )
+            <BrowserRouter>
+            <swtich>
+            <Route exact path="/" component={()=><Redirect to="/home"/>}/>
+                        <Route path="/home" component={Home}/>
+               
+                <Route path="/allList" component={()=><Todos todos={this.state.todos}/>}/>
+                
+                <Route path="/add" component={()=><Todo addoredit={this.addoredit} Item={
+                    {
+                        "userid":"",
+                        "id": "",
+                        "title": "",
+                        "completed":""
+                    }
+                }/>}/>
+                <Route path="/edit/:id" component={(props)=><Todo addoredit={this.addoredit} Item={this.state.todos.find(list=>list?.id==props.match.params.id)}/>}/>
+                
+                </swtich>
+            </BrowserRouter>
+        )
+    }
 }
-export  default App;
+export default Operation
