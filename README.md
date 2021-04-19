@@ -1,6 +1,11 @@
 # React_Projects
-First Clone the Project Then its run on Browser
+#This is a demo react project to show various concepts of React
 
-First install npx create app
+###Packages needed other than react :
+"axios"
+"BrowserRouter"
+
+###Command to install :
+##npm install axios BrowserRouter
 
  
